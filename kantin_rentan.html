@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>24781034 · Kantin · RENTAN</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #202124;
+      background: #f4f6f8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+    main {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #dfe3e8;
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 8px 28px rgba(20, 30, 50, .06);
+    }
+    h1 {
+      font-size: clamp(1.35rem, 4vw, 1.8rem);
+      margin: 0 0 12px;
+      line-height: 1.3;
+    }
+    .notice {
+      background: #fff8e6;
+      border: 1px solid #f0d58a;
+      color: #684c00;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin: 18px 0 24px;
+      font-size: .95rem;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    input {
+      display: block;
+      width: 100%;
+      border: 1px solid #b9c1cb;
+      border-radius: 8px;
+      padding: 12px;
+      font: inherit;
+      margin-bottom: 14px;
+      background: #fff;
+    }
+    input:focus {
+      outline: 3px solid rgba(37, 99, 235, .18);
+      border-color: #2563eb;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .primary { background: #2563eb; color: white; }
+    .secondary { background: #e9edf2; color: #202124; }
+    button:hover { filter: brightness(.96); }
+    #status {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      min-height: 44px;
+    }
+    h2 { font-size: 1.1rem; margin: 26px 0 8px; }
+    #log {
+      margin: 0;
+      padding: 12px;
+      background: #111827;
+      color: #d1fae5;
+      border-radius: 8px;
+      min-height: 76px;
+      max-height: 240px;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: .88rem/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    .footnote { color: #626b76; font-size: .88rem; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>24781034 · Kantin · RENTAN</h1>
+    <div class="notice">
+      <strong>DUMMY PRAKTIKUM</strong> – data sintetis. Jangan masukkan data pribadi.
+    </div>
+
+    <form id="demoForm">
+      <label for="apiKey">API key milik sendiri (tidak disimpan di kode):</label>
+      <input
+        id="apiKey"
+        name="apiKey"
+        type="password"
+        placeholder="Masukkan nilai uji sintetis"
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <div class="actions">
+        <button class="primary" type="submit">Kirim</button>
+        <button class="secondary" id="exportBtn" type="button">Ekspor log</button>
+      </div>
+    </form>
+
+    <div id="status" role="status" aria-live="polite">Siap untuk praktikum. Data hanya diproses secara lokal di halaman ini.</div>
+
+    <h2>Log aktivitas</h2>
+    <pre id="log">Belum ada aktivitas.</pre>
+    <p class="footnote">
+      Demo lokal untuk latihan. Halaman ini tidak mengirim API key ke server dan tidak terhubung ke API sungguhan.
+      Jangan gunakan kredensial asli.
+    </p>
+  </main>
+
+  <script>
+    const form = document.getElementById('demoForm');
+    const apiKeyInput = document.getElementById('apiKey');
+    const statusBox = document.getElementById('status');
+    const logBox = document.getElementById('log');
+    const exportBtn = document.getElementById('exportBtn');
+
+    // Hanya menyimpan catatan aktivitas demo, bukan nilai API key.
+    const activityLog = [];
+
+    function addLog(message) {
+      const entry = {
+        waktu: new Date().toLocaleString('id-ID'),
+        aktivitas: message
+      };
+      activityLog.push(entry);
+      logBox.textContent = activityLog
+        .map(item => `[${item.waktu}] ${item.aktivitas}`)
+        .join('\n');
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const value = apiKeyInput.value.trim();
+      if (!value) {
+        statusBox.textContent = 'Silakan masukkan nilai uji sintetis terlebih dahulu.';
+        addLog('Pengiriman dibatalkan: input kosong.');
+        return;
+      }
+
+      // Jangan tampilkan atau catat nilai input.
+      statusBox.textContent =
+        'Simulasi selesai. Input terdeteksi, tetapi tidak dikirim ke server atau API mana pun.';
+      addLog('Simulasi tombol Kirim dijalankan; nilai input tidak dicatat.');
+      apiKeyInput.value = '';
+    });
+
+    exportBtn.addEventListener('click', function () {
+      const content = activityLog.length
+        ? activityLog.map(item => `${item.waktu} - ${item.aktivitas}`).join('\n')
+        : 'Belum ada aktivitas untuk diekspor.';
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'log-praktikum-kantin.txt';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      statusBox.textContent = 'Log aktivitas demo berhasil disiapkan untuk diunduh.';
+      addLog('Ekspor log diminta.');
+    });
+  </script>
+</body>
+</html>
